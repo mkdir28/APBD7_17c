@@ -14,15 +14,6 @@ public class WarehouseDTO
     [Required]
     [MaxLength(200)]
     public string Address { get; set; } = string.Empty;
-    // public int IdProduct { get; set; }
-    // [Required]
-    // [MaxLength(200)]
-    // public int IdWarehouse { get; set; }
-    // [Required]
-    // [MaxLength(200)]
-    // public int Amount { get; set; }
-    // [Required]
-    // public string CreatedAt { get; set; }
 }
 
 public class ProductDTO
@@ -50,6 +41,17 @@ public class OrderDTO
     public DateTime CreatedAt { get; set; }
     [Required]
     public DateTime FullfiedAt { get; set; }
+}
+
+public class Product_Warehouse
+{
+    public int IdProduct { get; set; }
+    [Required]
+    public int IdWarehouse { get; set; }
+    [Required]
+    public int Amount { get; set; }
+    [Required]
+    public DateTime CreatedAt { get; set; }
 }
 
 
