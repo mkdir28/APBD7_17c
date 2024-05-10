@@ -16,4 +16,8 @@ public class WarehouseService(IWarehouseRepository repository) : IWarehouseServi
         return repository.UpdateOrderDTO(orderDto);
     }
 
+    public Task<bool> GetProduct(int id)
+    {
+        return repository.GetProduct(id);
+    }
 }
