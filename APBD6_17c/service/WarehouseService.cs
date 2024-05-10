@@ -25,4 +25,8 @@ public class WarehouseService(IWarehouseRepository repository) : IWarehouseServi
     {
         return repository.GetProduct_Warehouse(idOrder);
     }
+    
+    public Task<int> CreatedRecord(Product_Warehouse warehouse, ProductDTO productDto, OrderDTO orderDto){
+        return repository.CreatedRecord(warehouse, productDto, orderDto);
+    }
 }
