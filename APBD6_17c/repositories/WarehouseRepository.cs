@@ -86,12 +86,7 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
 	    
         return Convert.ToInt32(id);
     }
-
-    public async Task<ProductDTO?> AddProduct(int id)
-    {
-        
-    }
-
+    
     public async Task<bool> GetProduct(int id)
     {
         var queryproduct = "Select 1 From [ProductDTO] where id=@id";
@@ -141,4 +136,30 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
             return null;
     }
 
+    public async Task<int> CreatedRecord(Product_Warehouse warehouse, ProductDTO productDto, OrderDTO orderDto)
+    {
+        var query =
+            "Insert into  Product_Warehouse(IdProduct, IdWarehouse, Amount, Price, CreatedAt) " +
+            "VALUES (@IdProduct, @IdWarehouse, @Amount, @Price, @CreatedAt)";
+        //open connection
+        await using SqlConnection connection = new SqlConnection(configuration.GetConnectionString("Docker"));
+        await connection.OpenAsync();
+        
+        //create command
+        await using SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        command.CommandText = query;
+
+        command.Parameters.AddWithValue("@IdProduct", productDto.IdProduct);
+        command.Parameters.AddWithValue("@IdWarehouse", warehouse.IdWarehouse);
+        command.Parameters.AddWithValue("@Amount", warehouse.Amount);
+        command.Parameters.AddWithValue("@Price", warehouse.Amount * productDto.Price);
+        command.Parameters.AddWithValue("@CreatedAt", warehouse.CreatedAt);
+        
+        var id = await command.ExecuteScalarAsync();
+
+        if (id is null) throw new Exception();
+	    
+        return Convert.ToInt32(id);
+    }
 }
