@@ -162,4 +162,8 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
 	    
         return Convert.ToInt32(id);
     }
+    
+    public int WarehouseException(Product_Warehouse warehouse){
+        throw new NotImplementedException();
+    }
 }

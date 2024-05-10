@@ -9,4 +9,5 @@ public interface IWarehouseRepository
     Task<int> UpdateOrderDTO(OrderDTO orderDto);
     Task<OrderDTO?> CheckOrder(int idProduct, int amount, DateTime createdAt);
     Task<int> CreatedRecord(Product_Warehouse warehouse, ProductDTO productDto, OrderDTO orderDto);
+    int WarehouseException(Product_Warehouse warehouse);
 }
