@@ -1,10 +1,12 @@
+using APBD7_17c.dto;
+
 namespace APBD7_17c.repositories;
 
 public interface IWarehouseRepository
 {
-    Task<bool> CheckIfIDExist(int id);
-    Task<bool> AddProduct(int id);
-    Task<bool> UpdateFullfilledAtColumn(int id);
-    Task<bool> InsertToProduct_WarehouseTable(int id);
-    Task<bool> CheckOrder(int id);
+    Task<Product_Warehouse?> GetProduct_Warehouse(int id);
+    Task<ProductDTO?> GetProduct(int id);
+    Task<ProductDTO?> AddProduct(int id);
+    Task<OrderDTO> UpdateOrderDTO(int id);
+    Task<OrderDTO?> CheckOrder(int idProduct, int amount, DateTime createdAt);
 }
