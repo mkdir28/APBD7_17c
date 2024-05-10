@@ -34,7 +34,6 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
                     "Amount = @amount and CreatedAt < @createdAt";
         //open connection
         await using SqlConnection connection = new SqlConnection(configuration.GetConnectionString("Docker"));
-        connection.Open();
         
         //create command
         await using SqlCommand command = new SqlCommand();
@@ -67,9 +66,25 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
             return null;
     }
 
-    public async Task<OrderDTO> UpdateOrderDTO(int id)
+    public async Task<int> UpdateOrderDTO(OrderDTO orderDto)
     {
+        var query = "UPDATE [OrderDTO] SET FullfilledAt = @FullfilledAt where IdOrder=@id";
+        //open connection
+        await using SqlConnection connection = new SqlConnection(configuration.GetConnectionString("Docker"));
+        await connection.OpenAsync();
         
+        //create command
+        await using SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        command.CommandText = query;
+        command.Parameters.AddWithValue("@id", orderDto.IdOrder);
+        command.Parameters.AddWithValue("@FullfilledAt", DateTime.Now);
+
+        var id = await command.ExecuteScalarAsync();
+
+        if (id is null) throw new Exception();
+	    
+        return Convert.ToInt32(id);
     }
 
     public async Task<ProductDTO?> AddProduct(int id)
