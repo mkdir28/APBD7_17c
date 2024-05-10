@@ -40,7 +40,7 @@ public class OrderDTO
     [Required]
     public DateTime CreatedAt { get; set; }
     [Required]
-    public DateTime FullfiedAt { get; set; }
+    public DateTime? FullfiedAt { get; set; }
 }
 
 public class Product_Warehouse
