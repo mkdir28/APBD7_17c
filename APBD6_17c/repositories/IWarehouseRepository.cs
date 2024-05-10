@@ -7,6 +7,6 @@ public interface IWarehouseRepository
     Task<Product_Warehouse?> GetProduct_Warehouse(int id);
     Task<ProductDTO?> GetProduct(int id);
     Task<ProductDTO?> AddProduct(int id);
-    Task<OrderDTO> UpdateOrderDTO(int id);
+    Task<int> UpdateOrderDTO(OrderDTO orderDto);
     Task<OrderDTO?> CheckOrder(int idProduct, int amount, DateTime createdAt);
 }
