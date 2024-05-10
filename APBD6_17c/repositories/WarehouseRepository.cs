@@ -92,14 +92,53 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
         
     }
 
-    public async Task<ProductDTO?> GetProduct(int id)
+    public async Task<bool> GetProduct(int id)
     {
+        var queryproduct = "Select 1 From [ProductDTO] where id=@id";
+        //open connection
+        await using SqlConnection connection = new SqlConnection(configuration.GetConnectionString("Docker"));
+        await connection.OpenAsync();
         
+        //create command
+        await using SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        command.CommandText = queryproduct;
+        
+        var querywarehouse = "Select 1 From [WarehouseDTO] where id=@id";
+        command.CommandText = querywarehouse;
+
+        
+        var result = await command.ExecuteScalarAsync();
+
+        return result is not null;
     }
 
-    public async Task<Product_Warehouse?> GetProduct_Warehouse(int id)
+
+    public async Task<Product_Warehouse?> GetProduct_Warehouse(int idOrder)
     {
+        var query = "Select IdOrder from Product_Warehouse where IdProduct=@IdOrder";
+        //open connection
+        await using SqlConnection connection = new SqlConnection(configuration.GetConnectionString("Docker"));
+        await connection.OpenAsync();
         
+        //create command
+        await using SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        command.CommandText = query;
+
+        command.Parameters.AddWithValue("@idOrder", idOrder);
+        
+        var reader = await command.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            return new Product_Warehouse()
+            {
+                IdProduct = reader.GetInt32(reader.GetOrdinal("IdProduct"))
+            };
+        }
+        else
+            return null;
     }
 
 }
