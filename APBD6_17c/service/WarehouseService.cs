@@ -20,4 +20,9 @@ public class WarehouseService(IWarehouseRepository repository) : IWarehouseServi
     {
         return repository.GetProduct(id);
     }
+
+    public Task<Product_Warehouse?> GetProduct_Warehouse(int idOrder)
+    {
+        return repository.GetProduct_Warehouse(idOrder);
+    }
 }
