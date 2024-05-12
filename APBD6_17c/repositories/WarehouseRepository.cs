@@ -5,29 +5,6 @@ namespace APBD7_17c.repositories;
 
 public class WarehouseRepository(IConfiguration configuration): IWarehouseRepository
 {
-    // public async Task<bool> CheckIfIDExist(int id)
-    // {
-    //     var query = "SELECT 1 FROM Warehouse WHERE ID = @ID";
-    //     
-    //     //open connectiom
-    //     await using SqlConnection connection = new SqlConnection(configuration.GetConnectionString("Docker"));
-    //     connection.Open();
-    //     
-    //     //create command
-    //     await using SqlCommand command = new SqlCommand();
-    //     command.Connection = connection;
-    //     command.CommandText = query;
-    //     command.Parameters.AddWithValue("@ID", id);
-    //     
-    //     await connection.OpenAsync();
-    //     
-    //     var res = await command.ExecuteScalarAsync();
-    //
-    //     return res is not null;
-    // }
-
-
-
     public async Task<OrderDTO?> CheckOrder(int idProduct, int amount, DateTime createdAt)
     {
         var query = "SELECT IdOrder, ProductDTO.IdProduct, Amount, CreatedAt, FullfiedAt FROM OrderDTO WHERE IdProduct = @idProduct and" +
@@ -66,7 +43,7 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
             return null;
     }
 
-    public async Task<int> UpdateOrderDTO(OrderDTO orderDto)
+    public async Task<int> UpdateOrderDTO(int id)
     {
         var query = "UPDATE [OrderDTO] SET FullfilledAt = @FullfilledAt where IdOrder=@id";
         //open connection
@@ -77,19 +54,16 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
         await using SqlCommand command = new SqlCommand();
         command.Connection = connection;
         command.CommandText = query;
-        command.Parameters.AddWithValue("@id", orderDto.IdOrder);
+        command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@FullfilledAt", DateTime.Now);
 
-        var id = await command.ExecuteScalarAsync();
-
-        if (id is null) throw new Exception();
-	    
-        return Convert.ToInt32(id);
+        return await command.ExecuteNonQueryAsync();
     }
     
-    public async Task<bool> GetProduct(int id)
+    public async Task<ProductDTO?> GetProduct(int id)
     {
-        var queryproduct = "Select 1 From [ProductDTO] where id=@id";
+        var queryproduct = "Select 1 From [ProductDTO] where IdProduct=@id";
+
         //open connection
         await using SqlConnection connection = new SqlConnection(configuration.GetConnectionString("Docker"));
         await connection.OpenAsync();
@@ -99,13 +73,22 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
         command.Connection = connection;
         command.CommandText = queryproduct;
         
-        var querywarehouse = "Select 1 From [WarehouseDTO] where id=@id";
+        var querywarehouse = "Select 1 From [WarehouseDTO] where IdWarehouse=@id";
         command.CommandText = querywarehouse;
 
         
-        var result = await command.ExecuteScalarAsync();
+        var result = await command.ExecuteReaderAsync();
 
-        return result is not null;
+        if (!await result.ReadAsync())
+            return null;
+
+        return new ProductDTO
+        {
+            IdProduct = (int)result["IdProduct"],
+            Name = result["Name"].ToString(),
+            Description = result["Description"].ToString(),
+            Price = Convert.ToDecimal(result["Price"].ToString())
+        };
     }
 
 
@@ -162,8 +145,34 @@ public class WarehouseRepository(IConfiguration configuration): IWarehouseReposi
 	    
         return Convert.ToInt32(id);
     }
+
+    public async Task<WarehouseDTO?> GetWarehouse(int id)
+    {
+        var query = "SELECT IdWarehouse, Name, Address FROM Warehouse WHERE IdWarehouse = @id";
+        //open connection
+        await using SqlConnection connection = new SqlConnection(configuration.GetConnectionString("Docker"));
+        await connection.OpenAsync();
+        
+        //create command
+        await using SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        command.CommandText = query;
+        
+        command.Parameters.AddWithValue("@id", id);
+        var result = await command.ExecuteReaderAsync();
+
+        if (!await result.ReadAsync())
+            return null;
+
+        return new WarehouseDTO
+        {
+            IdWarehouse = (int)result["IdWarehouse"],
+            Name = result["Name"].ToString(),
+            Address = result["Address"].ToString()
+        };
+    }
     
-    public int WarehouseException(Product_Warehouse warehouse){
+    public async Task<int> WarehouseException(Product_Warehouse warehouse){
         throw new NotImplementedException();
     }
 }

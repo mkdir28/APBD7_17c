@@ -27,7 +27,7 @@ public class ProductDTO
     [MaxLength(200)]
     public string Description { get; set; }
     [Required]
-    public int Price { get; set; }
+    public decimal Price { get; set; }
 }
 
 public class OrderDTO
