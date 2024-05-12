@@ -8,6 +8,5 @@ public interface IWarehouseService
     Task<ProductDTO?> GetProduct(int id);
     Task<int> UpdateOrderDTO(int id);
     Task<OrderDTO?> CheckOrder(int idProduct, int amount, DateTime createdAt);
-
-    Task<int> CreatedRecord(Product_Warehouse warehouse);
+    Task<int> CreatedRecord(Product_Warehouse warehouse_product);
 }
